@@ -53,7 +53,8 @@ backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to q
 Rendez-vous sur [http://localhost:8501](http://localhost:8501) pour utiliser l'interface Streamlit.
 
 # Adresse ngrok :
-Lancer les les Docker avec docker compose up
+Lancer les les Docker avec docker compose up, puis :
+
 ngrok http 8001 --url https://hackversailles-8-yeah.ngrok.app
 
 Puis, lancer une commande du type :
