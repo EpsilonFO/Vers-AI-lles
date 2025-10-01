@@ -48,16 +48,3 @@ backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to q
 4. Remplacez `string` par votre prompt dans le champ message
 5. Cliquez sur `Exécuter`
 6. La réponse s'affiche dans `Response body`
-
-### Via l'interface web
-Rendez-vous sur [http://localhost:8501](http://localhost:8501) pour utiliser l'interface Streamlit.
-
-# Adresse ngrok :
-Lancer les les Docker avec docker compose up
-ngrok http 8001 --url https://hackversailles-8-yeah.ngrok.app
-
-Puis, lancer une commande du type :
-
-curl -X POST "https://hackversailles-8-yeah.ngrok.app/chat" \
-     -H "Content-Type: application/json" \
-     -d '{"question": "je veux venir demain à 11h avec ma copine, donne moi un itinéraire"}'
