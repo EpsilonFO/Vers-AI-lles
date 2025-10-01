@@ -28,13 +28,21 @@ docker compose up --build
 
 Une fois que les logs affichent les lignes suivantes :
 ```
-backend-1  | INFO:     Started server process [1]
-backend-1  | INFO:     Waiting for application startup.
-backend-1  | INFO:     Application startup complete.
-backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+frontend-1  | 
+frontend-1  | Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+frontend-1  | 
+frontend-1  | 
+frontend-1  |   You can now view your Streamlit app in your browser.
+frontend-1  | 
+frontend-1  |   URL: http://0.0.0.0:8501
+frontend-1  | 
+backend-1   | INFO:     Started server process [1]
+backend-1   | INFO:     Waiting for application startup.
+backend-1   | INFO:     Application startup complete.
+backend-1   | INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
 ```
 
-## Accès aux services
+Vous pouvez accéder au services suivants :
 
 - **Backend API** : [http://localhost:8001](http://localhost:8001) - Swagger UI pour tester l'API
 - **Frontend** : [http://localhost:8501](http://localhost:8501) - Interface utilisateur Streamlit

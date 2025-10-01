@@ -555,9 +555,12 @@ def talk_to_agent(state, mgr, query=None):
     print("Agent:", state.messages[-1].content)
     return state.messages[-1].content
 
-if __name__ == "__main__":
-    state = State()
-    mgr = GraphManagerEval()
-    print(INIT_MESSAGE)
-    while True:
-        print(talk_to_agent(state, mgr))
+# if __name__ == "__main__":
+#     state = State()
+#     mgr = GraphManagerEval()
+#     print(INIT_MESSAGE)
+#     while True:
+#         print(talk_to_agent(state, mgr))
+
+g = GraphManager()
+g.display_image()
