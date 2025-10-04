@@ -9,9 +9,13 @@ from typing import Optional
 
 # Add parent directory to path
 sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('../agents'))
+sys.path.append(os.path.abspath('/Users/sarah/Desktop/les_4_MousquetAIres/'))
+sys.path.append(os.path.abspath('/Users/sarah/Desktop/les_4_MousquetAIres/agents'))
 
 from agents.langgraph_flow import run_graph
 from agents.agent_multistep import reset_session
+
 from llm.reservation_memory import ReservationPlan, ReservationState
 from memory.memory import load_session, save_session
 

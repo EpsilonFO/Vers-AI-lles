@@ -1,17 +1,24 @@
-# tools/get_next_passage.py
 import requests
+import json
 from langchain.tools import tool
 
-BASE_URL = "https://api-ratp.pierre-grimaud.fr/v4"  # endpoint du projet ratp-api-rest
+BASE_URL = "https://api-ratp.pierre-grimaud.fr/v4"
 
-@tool(description='Get metro times')
-def get_next_passages(stop: str, line: str, transport_type: str = "bus") -> str:
+@tool("get_next_passages", return_direct=False)
+def get_next_passages(query: str) -> str:
     """
-    Ex : stop="Châtelet", line="72", transport_type="bus"
-    transport_type peut être "metro", "rer", "bus", "tram"
-    Returns next formatted passages.
+    Obtenir les prochains passages d'un transport.
+    Query doit être un JSON string du type :
+    {"stop": "Châtelet", "line": "72", "transport_type": "bus"}
     """
-    # Construire l’URL : /stop/{transport}/{line}/{stop}/next
+    try:
+        params = json.loads(query)
+        stop = params.get("stop")
+        line = params.get("line")
+        transport_type = params.get("transport_type", "bus")
+    except Exception as e:
+        return f"Erreur parsing input JSON : {e}"
+
     url = f"{BASE_URL}/schedules/{transport_type}/{line}/{stop}"
     try:
         resp = requests.get(url)
@@ -24,12 +31,6 @@ def get_next_passages(stop: str, line: str, transport_type: str = "bus") -> str:
         return f"Aucun horaire disponible pour {transport_type} {line} à {stop}."
 
     schedules = data["result"]["schedules"]
-    # Formater quelques passages
-    formatted = []
-    for s in schedules:
-        # s contient typiquement {"message":"xx min", "destination":"..."}
-        msg = s.get("message")
-        dest = s.get("destination")
-        formatted.append(f"{msg} vers {dest}")
+    formatted = [f"{s.get('message')} vers {s.get('destination')}" for s in schedules]
 
     return f"Prochains passages pour {transport_type.upper()} ligne {line} à {stop} : " + "; ".join(formatted)
