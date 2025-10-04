@@ -397,7 +397,7 @@ if __name__ == "__main__":
 ║  Versailles Visit Planning Agent - MCP Server               ║
 ║  Running on: http://{host}:{port}                      ║
 ║                                                              ║
-║  Available Tools: {len(mcp.list_tools())} tools                                    ║
+║  Available Tools: {mcp._list_tools()} tools                                    ║
 ║  - Versailles Knowledge Base (4 tools)                      ║
 ║  - Booking & Availability (3 tools)                          ║
 ║  - Transportation (4 tools)                                  ║
