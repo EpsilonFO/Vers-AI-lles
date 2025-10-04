@@ -31,5 +31,5 @@ pytest-asyncio
 httpx
 
 streamlit
-
+fastmcp
 huggingface_hub
