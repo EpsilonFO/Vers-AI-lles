@@ -3,38 +3,40 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 import os
 
-# --- Configuration de la page ---
+# --- Streamlit page config ---
 st.set_page_config(
-    page_title="👑 Versailles Assistant",
+    page_title="👑 Versailles Assistant (GPU)",
     page_icon="🏰",
     layout="centered"
 )
 
-st.title("👑 Assistant du Château de Versailles")
-st.caption("Posez vos questions sur les billets, horaires, transports, hébergements, ou météo à Versailles.")
+st.title("👑 Versailles Assistant (GPU powered)")
+st.caption("Ask about tickets, schedules, travel, or accommodations at Versailles.")
 
-# --- Chargement du modèle Mistral local ---
+# --- Load model from local path ---
 @st.cache_resource
 def load_mistral():
-    # 🔹 Utilisation du chemin local vers le modèle
-    model_path = "Mistral-7B-Instruct-v0.1"
+    model_path = r"C:\Users\sarah\Desktop\les_4_MousquetAIres\Mistral-7B-Instruct-v0.1"
 
-    # Vérifie que le dossier existe
-    '''if not os.path.exists(model_path):
-        st.error(f"❌ Le dossier du modèle n'existe pas : {model_path}")
-        st.stop()'''
+    if not os.path.exists(model_path):
+        st.error(f"❌ Model folder not found: {model_path}")
+        st.stop()
 
+    # Load tokenizer and model (GPU optimized)
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
-        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-        device_map="auto"
+        torch_dtype=torch.float16,     # ✅ use half precision for GPU
+        device_map="cuda",             # ✅ load directly to CUDA
+        low_cpu_mem_usage=True
     )
 
+    # Build text generation pipeline
     pipe = pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
+        device=0,                      # use CUDA:0
         max_new_tokens=512,
         temperature=0.3,
         do_sample=True,
@@ -42,49 +44,60 @@ def load_mistral():
     )
     return pipe
 
-with st.spinner("Chargement du modèle local Mistral... ⏳"):
+# --- Load model ---
+with st.spinner("Loading Mistral model on GPU... ⚡"):
     pipe = load_mistral()
 
-st.success("Modèle Mistral chargé avec succès ✅")
+st.success("✅ Mistral loaded on GPU successfully!")
 
-# --- Gestion de la session ---
+# --- Session management ---
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# --- Entrée utilisateur ---
-user_input = st.chat_input("Écrivez votre question ici...")
+# --- Input ---
+user_input = st.chat_input("Ask me about Versailles...")
 
 def generate_response(user_message: str) -> str:
     """
-    Génère la réponse à partir du modèle local.
+    Generate a response from the local Mistral model.
     """
-    prompt = f"""Tu es un assistant de voyage expert du Château de Versailles.
-Réponds de manière claire, polie et utile à la question suivante :
+    prompt = f"""You are a polite and expert travel assistant for visitors at Château de Versailles.
+Answer clearly and concisely.
 
-Utilisateur : {user_message}
-Réponse :"""
+User: {user_message}
+Answer:"""
 
-    output = pipe(prompt)[0]["generated_text"]
-    response = output.split("Réponse :")[-1].strip()
+    # Run inference on GPU
+    outputs = pipe(prompt)
+    full_text = outputs[0]["generated_text"]
+    response = full_text.split("Answer:")[-1].strip()
     return response
 
-# --- Interaction utilisateur ---
+# --- Chat interaction ---
 if user_input:
-    with st.spinner("L'assistant réfléchit... 🤔"):
+    with st.spinner("Thinking... 🤔"):
         response = generate_response(user_input)
 
-    # Sauvegarde dans l'historique
-    st.session_state.history.append(("👩‍💬 Vous", user_input))
+    st.session_state.history.append(("👩‍💬 You", user_input))
     st.session_state.history.append(("🤖 Assistant", response))
 
-# --- Affichage du chat ---
+# --- Display chat history ---
 for speaker, msg in st.session_state.history:
-    if "Vous" in speaker:
+    if "You" in speaker:
         st.markdown(f"**{speaker}:** {msg}")
     else:
         st.markdown(f"> 💬 **{speaker}:** {msg}")
 
-# --- Bouton reset ---
-if st.button("🧹 Réinitialiser la conversation"):
+# --- Reset button ---
+if st.button("🧹 Reset conversation"):
     st.session_state.history = []
-    st.success("Conversation réinitialisée ✅")
+    st.success("Chat cleared ✅")
+
+# --- GPU Info ---
+if torch.cuda.is_available():
+    gpu_name = torch.cuda.get_device_name(0)
+    st.sidebar.success(f"🟢 GPU detected: {gpu_name}")
+    st.sidebar.write(f"Memory allocated: {torch.cuda.memory_allocated() / 1e9:.2f} GB")
+    st.sidebar.write(f"Memory reserved: {torch.cuda.memory_reserved() / 1e9:.2f} GB")
+else:
+    st.sidebar.error("⚠️ CUDA GPU not detected.")
