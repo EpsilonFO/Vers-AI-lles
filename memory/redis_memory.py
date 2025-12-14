@@ -9,8 +9,7 @@ r = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)
 
 # Historique des messages LangChain dans Redis
 chat_history = RedisChatMessageHistory(
-    redis_client=r,
-    session_id="default_session"  # ou injecter session_id dynamique
+    redis_client=r, session_id="default_session"  # ou injecter session_id dynamique
 )
 
 # Mémoire ConversationBuffer pour l’agent

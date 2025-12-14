@@ -3,4 +3,4 @@
 from .vector_store import VersaillesVectorStore
 from .retriever import VersaillesRetriever
 
-__all__ = ['VersaillesVectorStore', 'VersaillesRetriever']
+__all__ = ["VersaillesVectorStore", "VersaillesRetriever"]

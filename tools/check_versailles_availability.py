@@ -2,8 +2,9 @@
 import requests
 from langchain.tools import tool
 
+
 # 1️⃣ Versailles
-@tool(description='Check availability for date')
+@tool(description="Check availability for date")
 def check_versailles_availability(date: str, type_billet: str) -> str:
     # API réelle ou simulation
     if date == "2025-10-01":

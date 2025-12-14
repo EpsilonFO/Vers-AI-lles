@@ -1,5 +1,5 @@
 # prompts/reservation_prompt.py
-reservation_template ="""
+reservation_template = """
 Tu es un agent intelligent pour organiser une visite au Château de Versailles.
 Ta mission est de collecter uniquement les informations manquantes auprès de l’utilisateur et de planifier la visite de manière optimale.
 

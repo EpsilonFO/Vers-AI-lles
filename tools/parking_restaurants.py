@@ -4,14 +4,14 @@ from langchain.tools import tool
 from typing import List, Dict
 
 
-@tool(description='Get parking information near Versailles')
+@tool(description="Get parking information near Versailles")
 def get_parking_info(location: str = "Versailles") -> str:
     """
     Get parking information near the Château de Versailles.
-    
+
     Args:
         location: Specific location or area (default: Versailles)
-    
+
     Returns:
         Parking information including locations, prices, and availability
     """
@@ -26,7 +26,7 @@ def get_parking_info(location: str = "Versailles") -> str:
                 "capacity": "~400 places",
                 "type": "Payant",
                 "hours": "24h/24",
-                "notes": "Le plus proche du château"
+                "notes": "Le plus proche du château",
             },
             {
                 "name": "Parking Gare Rive Droite",
@@ -36,7 +36,7 @@ def get_parking_info(location: str = "Versailles") -> str:
                 "capacity": "~200 places",
                 "type": "Payant",
                 "hours": "6h-22h",
-                "notes": "Proche de la gare RER"
+                "notes": "Proche de la gare RER",
             },
             {
                 "name": "Parking Notre-Dame",
@@ -46,7 +46,7 @@ def get_parking_info(location: str = "Versailles") -> str:
                 "capacity": "~150 places",
                 "type": "Payant",
                 "hours": "7h-21h",
-                "notes": "Centre-ville, proche commerces"
+                "notes": "Centre-ville, proche commerces",
             },
             {
                 "name": "Parking Trianon (Grille de la Reine)",
@@ -56,12 +56,12 @@ def get_parking_info(location: str = "Versailles") -> str:
                 "capacity": "~100 places",
                 "type": "Payant",
                 "hours": "8h-18h30",
-                "notes": "Idéal pour visiter Trianon en premier"
-            }
+                "notes": "Idéal pour visiter Trianon en premier",
+            },
         ]
-        
+
         result = "🅿️ **Parkings près du Château de Versailles**\n\n"
-        
+
         for i, parking in enumerate(parking_options, 1):
             result += f"**{i}. {parking['name']}**\n"
             result += f"   📍 Adresse: {parking['address']}\n"
@@ -70,7 +70,7 @@ def get_parking_info(location: str = "Versailles") -> str:
             result += f"   🚗 Capacité: {parking['capacity']}\n"
             result += f"   🕐 Horaires: {parking['hours']}\n"
             result += f"   ℹ️ {parking['notes']}\n\n"
-        
+
         result += """
 💡 **Conseils:**
 - Arrivez tôt le matin pour trouver une place facilement
@@ -78,23 +78,25 @@ def get_parking_info(location: str = "Versailles") -> str:
 - Pensez aux transports en commun (RER C) pour éviter les problèmes de stationnement
 - Les parkings sont gratuits pour les personnes à mobilité réduite (sur présentation de la carte)
 """
-        
+
         return result
-    
+
     except Exception as e:
         return f"Erreur lors de la récupération des informations de parking: {str(e)}"
 
 
-@tool(description='Find restaurants near Versailles')
-def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: str = "moyen") -> str:
+@tool(description="Find restaurants near Versailles")
+def find_restaurants(
+    location: str = "Versailles", cuisine: str = None, budget: str = "moyen"
+) -> str:
     """
     Find restaurants near the Château de Versailles.
-    
+
     Args:
         location: Location to search (default: Versailles)
         cuisine: Type of cuisine (française, italienne, asiatique, etc.)
         budget: Budget level (économique, moyen, élevé)
-    
+
     Returns:
         List of recommended restaurants with details
     """
@@ -110,7 +112,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.2/5",
                 "speciality": "Cuisine traditionnelle française",
                 "hours": "12h-15h",
-                "notes": "Vue sur le Grand Canal, réservation recommandée"
+                "notes": "Vue sur le Grand Canal, réservation recommandée",
             },
             {
                 "name": "La Petite Venise",
@@ -121,7 +123,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.0/5",
                 "speciality": "Pizzas, pâtes, salades",
                 "hours": "11h30-18h",
-                "notes": "Idéal pour un déjeuner rapide"
+                "notes": "Idéal pour un déjeuner rapide",
             },
             {
                 "name": "Ore - Ducasse au Château",
@@ -132,7 +134,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.5/5",
                 "speciality": "Cuisine d'Alain Ducasse",
                 "hours": "12h-14h30, 19h-21h30",
-                "notes": "Restaurant étoilé, réservation obligatoire"
+                "notes": "Restaurant étoilé, réservation obligatoire",
             },
             {
                 "name": "Le Bistrot du 11",
@@ -143,7 +145,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.3/5",
                 "speciality": "Cuisine bistrot, plats du jour",
                 "hours": "12h-14h30, 19h-22h",
-                "notes": "Ambiance conviviale, bon rapport qualité-prix"
+                "notes": "Ambiance conviviale, bon rapport qualité-prix",
             },
             {
                 "name": "Le Montbauron",
@@ -154,7 +156,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.1/5",
                 "speciality": "Fruits de mer, viandes grillées",
                 "hours": "12h-15h, 19h-23h",
-                "notes": "Grande terrasse, menu enfants disponible"
+                "notes": "Grande terrasse, menu enfants disponible",
             },
             {
                 "name": "Angelina Versailles",
@@ -165,29 +167,31 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
                 "rating": "4.4/5",
                 "speciality": "Mont-Blanc, chocolat chaud",
                 "hours": "10h-18h",
-                "notes": "Parfait pour un goûter après la visite"
-            }
+                "notes": "Parfait pour un goûter après la visite",
+            },
         ]
-        
+
         # Filter by cuisine if specified
         if cuisine:
-            restaurants = [r for r in restaurants if cuisine.lower() in r['cuisine'].lower()]
-        
+            restaurants = [
+                r for r in restaurants if cuisine.lower() in r["cuisine"].lower()
+            ]
+
         # Filter by budget
         budget_map = {
             "économique": ["€", "€€"],
             "moyen": ["€€", "€€€"],
-            "élevé": ["€€€", "€€€€"]
+            "élevé": ["€€€", "€€€€"],
         }
         if budget.lower() in budget_map:
             price_range = budget_map[budget.lower()]
-            restaurants = [r for r in restaurants if r['price'] in price_range]
-        
+            restaurants = [r for r in restaurants if r["price"] in price_range]
+
         if not restaurants:
             return "Aucun restaurant trouvé avec ces critères. Essayez d'élargir votre recherche."
-        
+
         result = "🍽️ **Restaurants près du Château de Versailles**\n\n"
-        
+
         for i, resto in enumerate(restaurants, 1):
             result += f"**{i}. {resto['name']}**\n"
             result += f"   🍴 Type: {resto['type']}\n"
@@ -198,7 +202,7 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
             result += f"   👨‍🍳 Spécialité: {resto['speciality']}\n"
             result += f"   🕐 Horaires: {resto['hours']}\n"
             result += f"   ℹ️ {resto['notes']}\n\n"
-        
+
         result += """
 💡 **Conseils:**
 - Réservez à l'avance, surtout le week-end
@@ -206,18 +210,18 @@ def find_restaurants(location: str = "Versailles", cuisine: str = None, budget: 
 - Pour un budget serré, pensez aux boulangeries et cafés du quartier
 - Menu enfants disponibles dans la plupart des restaurants
 """
-        
+
         return result
-    
+
     except Exception as e:
         return f"Erreur lors de la recherche de restaurants: {str(e)}"
 
 
-@tool(description='Get luggage storage information')
+@tool(description="Get luggage storage information")
 def get_luggage_storage_info() -> str:
     """
     Get information about luggage storage facilities near Versailles.
-    
+
     Returns:
         Luggage storage options and details
     """
@@ -270,6 +274,6 @@ def get_luggage_storage_info() -> str:
 - Trépieds et perches à selfie
 """
         return info
-    
+
     except Exception as e:
         return f"Erreur lors de la récupération des informations: {str(e)}"

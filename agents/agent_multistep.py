@@ -2,9 +2,10 @@
 
 import os
 import sys
-sys.path.append(os.path.abspath('../tools'))
-sys.path.append(os.path.abspath('../memory'))
-sys.path.append(os.path.abspath('..'))
+
+sys.path.append(os.path.abspath("../tools"))
+sys.path.append(os.path.abspath("../memory"))
+sys.path.append(os.path.abspath(".."))
 
 from langchain.agents import initialize_agent, AgentType
 from langchain.llms import HuggingFacePipeline
@@ -14,7 +15,10 @@ import redis
 
 # Import tools
 from tools.check_versailles_availability import check_versailles_availability
-from tools.book_versailles_tickets import book_versailles_tickets, check_ticket_availability
+from tools.book_versailles_tickets import (
+    book_versailles_tickets,
+    check_ticket_availability,
+)
 from tools.get_next_passage import get_next_passages
 from tools.get_schedule_at_times import get_schedules_at_time
 from tools.get_weather import get_weather
@@ -50,23 +54,20 @@ except Exception as e:
 # -----------------------------
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
-model_name = "mistralai/Mistral-7B-Instruct-v0.1"  # remplacer par ton modèle local si téléchargé
+model_name = (
+    "mistralai/Mistral-7B-Instruct-v0.1"  # remplacer par ton modèle local si téléchargé
+)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    device_map="auto",  # GPU si dispo
-    torch_dtype="auto"
+    model_name, device_map="auto", torch_dtype="auto"  # GPU si dispo
 )
 
 pipe = pipeline(
-    "text-generation",
-    model=model,
-    tokenizer=tokenizer,
-    max_length=512,
-    temperature=0.2
+    "text-generation", model=model, tokenizer=tokenizer, max_length=512, temperature=0.2
 )
 
 llm = HuggingFacePipeline(pipeline=pipe)
+
 
 # -----------------------------
 # MEMORY
@@ -78,42 +79,38 @@ def get_memory(session_id: str):
     if REDIS_AVAILABLE:
         try:
             chat_history = RedisChatMessageHistory(
-                redis_client=r,
-                session_id=session_id
+                redis_client=r, session_id=session_id
             )
             memory = ConversationBufferMemory(
                 memory_key="chat_history",
                 chat_memory=chat_history,
-                return_messages=True
+                return_messages=True,
             )
             return memory
         except Exception as e:
             print(f"Error creating Redis memory: {e}")
 
     # Fallback in-memory
-    return ConversationBufferMemory(
-        memory_key="chat_history",
-        return_messages=True
-    )
+    return ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
 
 # -----------------------------
 # TOOLS
 # -----------------------------
-tools = [    
+tools = [
     # Transportation
     get_next_passages,
     get_schedules_at_time,
     search_train,
     book_train,
-    
     # Accommodation
     search_airbnb,
     book_airbnb,
-    
     # Practical info
     get_weather,
-    google_maps_route
+    google_maps_route,
 ]
+
 
 # -----------------------------
 # AGENT CREATION
@@ -131,9 +128,10 @@ def create_agent(session_id: str):
         verbose=True,
         handle_parsing_errors=True,
         max_iterations=5,
-        agent_kwargs={"prefix": reservation_template}
+        agent_kwargs={"prefix": reservation_template},
     )
     return agent
+
 
 # -----------------------------
 # AGENT EXECUTION
@@ -156,7 +154,9 @@ def run_agent(session_id: str, user_message: str) -> str:
         response = agent.run(context_msg)
 
         # Save to backup memory
-        session_data["chat_history"] = previous_context + f"\nUtilisateur : {user_message}\nAgent : {response}"
+        session_data["chat_history"] = (
+            previous_context + f"\nUtilisateur : {user_message}\nAgent : {response}"
+        )
         save_session(session_id, session_data)
 
         return response
@@ -165,6 +165,7 @@ def run_agent(session_id: str, user_message: str) -> str:
         error_msg = f"Erreur lors du traitement de votre demande: {str(e)}"
         print(f"Agent error: {e}")
         return error_msg
+
 
 # -----------------------------
 # RESET SESSION
@@ -176,11 +177,10 @@ def reset_session(session_id: str):
     try:
         if REDIS_AVAILABLE:
             chat_history = RedisChatMessageHistory(
-                redis_client=r,
-                session_id=session_id
+                redis_client=r, session_id=session_id
             )
             chat_history.clear()
-        
+
         save_session(session_id, {"chat_history": ""})
         print(f"Session {session_id} reset successfully")
 

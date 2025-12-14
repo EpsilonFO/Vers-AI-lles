@@ -5,13 +5,12 @@ import os
 
 # --- Streamlit page config ---
 st.set_page_config(
-    page_title="👑 Versailles Assistant (GPU)",
-    page_icon="🏰",
-    layout="centered"
+    page_title="👑 Versailles Assistant (GPU)", page_icon="🏰", layout="centered"
 )
 
 st.title("👑 Versailles Assistant (GPU powered)")
 st.caption("Ask about tickets, schedules, travel, or accommodations at Versailles.")
+
 
 # --- Load model from local path ---
 @st.cache_resource
@@ -26,9 +25,9 @@ def load_mistral():
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
-        torch_dtype=torch.float16,     # ✅ use half precision for GPU
-        device_map="cuda",             # ✅ load directly to CUDA
-        low_cpu_mem_usage=True
+        torch_dtype=torch.float16,  # ✅ use half precision for GPU
+        device_map="cuda",  # ✅ load directly to CUDA
+        low_cpu_mem_usage=True,
     )
 
     # Build text generation pipeline
@@ -36,13 +35,14 @@ def load_mistral():
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        device=0,                      # use CUDA:0
+        device=0,  # use CUDA:0
         max_new_tokens=512,
         temperature=0.3,
         do_sample=True,
-        top_p=0.9
+        top_p=0.9,
     )
     return pipe
+
 
 # --- Load model ---
 with st.spinner("Loading Mistral model on GPU... ⚡"):
@@ -56,6 +56,7 @@ if "history" not in st.session_state:
 
 # --- Input ---
 user_input = st.chat_input("Ask me about Versailles...")
+
 
 def generate_response(user_message: str) -> str:
     """
@@ -72,6 +73,7 @@ Answer:"""
     full_text = outputs[0]["generated_text"]
     response = full_text.split("Answer:")[-1].strip()
     return response
+
 
 # --- Chat interaction ---
 if user_input:

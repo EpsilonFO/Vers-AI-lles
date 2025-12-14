@@ -4,6 +4,7 @@ from langchain.tools import tool
 
 BASE_URL = "https://api-ratp.pierre-grimaud.fr/v4"
 
+
 @tool("get_next_passages", return_direct=False)
 def get_next_passages(query: str) -> str:
     """
@@ -33,4 +34,7 @@ def get_next_passages(query: str) -> str:
     schedules = data["result"]["schedules"]
     formatted = [f"{s.get('message')} vers {s.get('destination')}" for s in schedules]
 
-    return f"Prochains passages pour {transport_type.upper()} ligne {line} à {stop} : " + "; ".join(formatted)
+    return (
+        f"Prochains passages pour {transport_type.upper()} ligne {line} à {stop} : "
+        + "; ".join(formatted)
+    )
